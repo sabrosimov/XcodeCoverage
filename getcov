@@ -10,7 +10,8 @@ source ${DIR}/envcov.sh
 
 remove_old_report()
 {
-    pushd ${BUILT_PRODUCTS_DIR}
+    echo "Remove old report..."
+    pushd "${BUILT_PRODUCTS_DIR}"
     if [ -e lcov ]; then
         rm -r lcov
     fi
@@ -19,13 +20,15 @@ remove_old_report()
 
 enter_lcov_dir()
 {
-    cd ${BUILT_PRODUCTS_DIR}
+    echo "Enter ${BUILT_PRODUCTS_DIR} ..."
+    cd "${BUILT_PRODUCTS_DIR}"
     mkdir lcov
     cd lcov
 }
 
 gather_coverage()
 {
+    echo "Gather covarege ..."
     LCOV --capture --derive-func-data -b "${SRCROOT}" -d "${OBJ_DIR}" -o ${LCOV_INFO}
 }
 
@@ -42,8 +45,8 @@ generate_report()
     open index.html
 }
 
-remove_old_report
-enter_lcov_dir
-gather_coverage
-exclude_data
-generate_report
+remove_old_report || exit
+enter_lcov_dir || exit
+gather_coverage || exit
+exclude_data || exit
+generate_report || exit

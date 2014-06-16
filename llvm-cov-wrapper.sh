@@ -5,9 +5,11 @@
 #   Source: https://github.com/jonreid/XcodeCoverage
 #
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 if [ "$1" = "-v" ]; then
     echo "llvm-cov-wrapper 4.2.1"
     exit 0
 else
-    /usr/bin/gcov $*
+    ${DIR}/cla-wrapper.py /usr/bin/gcov $*
 fi
