@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os, logging
+import os, sys, logging
 
 command_args = ""
 split = False

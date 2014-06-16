@@ -28,12 +28,13 @@ enter_lcov_dir()
 
 gather_coverage()
 {
-    echo "Gather covarege ..."
+    echo "\nGather covarege ..."
     LCOV --capture --derive-func-data -b "${SRCROOT}" -d "${OBJ_DIR}" -o ${LCOV_INFO}
 }
 
 exclude_data()
 {
+    echo "\nExclude third-party libraries ..."
     LCOV --remove ${LCOV_INFO} "Applications/Xcode.app/*" -d "${OBJ_DIR}" -o ${LCOV_INFO}
     LCOV --remove ${LCOV_INFO} "main.m" -d "${OBJ_DIR}" -o ${LCOV_INFO}
     # Remove other patterns here...
@@ -41,8 +42,10 @@ exclude_data()
 
 generate_report()
 {
+   echo "\nGenerate report..."
     "${LCOV_PATH}/genhtml" --output-directory . ${LCOV_INFO}
     open index.html
+   echo "\n####     A browser window is opened. Now you can see thhe code coverage!    ####"
 }
 
 remove_old_report || exit
