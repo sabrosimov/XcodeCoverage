@@ -26,6 +26,14 @@ enter_lcov_dir()
     cd lcov
 }
 
+remove_source()
+{
+
+    for file in $*; do
+        rm "${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}/$file.gcda"
+    done
+}
+
 gather_coverage()
 {
     echo "\nGather covarege ..."
@@ -45,11 +53,12 @@ generate_report()
    echo "\nGenerate report..."
     "${LCOV_PATH}/genhtml" --output-directory . ${LCOV_INFO}
     open index.html
-   echo "\n####     A browser window is opened. Now you can see thhe code coverage!    ####"
+   echo "\n####     A browser window is opened. Now you can see the code coverage!    ####"
 }
 
 remove_old_report || exit
 enter_lcov_dir || exit
+#remove_source AppDelegate SupervisorAPIConnector
 gather_coverage || exit
 exclude_data || exit
 generate_report || exit
