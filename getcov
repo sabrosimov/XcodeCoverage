@@ -5,6 +5,14 @@
 #   Source: https://github.com/jonreid/XcodeCoverage
 #
 
+if [ "$1" == "exclude" ]; then
+    echo "\nGenerating HTML report of the code coverage of Xcode project, excludeing third-party libraries\n"
+    EXCLUDE="true"
+else
+    echo "\nGenerating HTML report of the code coverage of Xcode project, including third-party libraries\n"
+    EXCLUDE="false"
+fi
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source ${DIR}/envcov.sh
 
@@ -45,20 +53,25 @@ exclude_data()
     echo "\nExclude third-party libraries ..."
     LCOV --remove ${LCOV_INFO} "Applications/Xcode.app/*" -d "${OBJ_DIR}" -o ${LCOV_INFO}
     #LCOV --remove ${LCOV_INFO} "main.m" -d "${OBJ_DIR}" -o ${LCOV_INFO}
-    for i in `ls -d /Users/five9inf/CodeCoverage/SupervisorDashboard-iOS/*/ | egrep -wv "Supervisor Dashboard|SupervisorAPI-Bindings"`
-    do
-        pattern=`echo $i | awk -F'/Users/five9inf/CodeCoverage/SupervisorDashboard-iOS/' '{ print $2 }'`
-        echo "Removing $i    $pattern" 
-        LCOV --remove ${LCOV_INFO} "$pattern*" -d "${OBJ_DIR}" -o ${LCOV_INFO}
-    done 
+
+    if [ $EXCLUDE = "true" ]; then
+        for i in `ls -d $PRGROOT/*/ | egrep -wv "Supervisor Dashboard|SupervisorAPI-Bindings"`
+        do
+            pattern=`echo $i | awk -F $PRGROOT/ '{ print $2 }'`
+            echo "Removing $i" 
+            LCOV --remove ${LCOV_INFO} "$pattern*" -d "${OBJ_DIR}" -o ${LCOV_INFO}
+        done 
+    fi
 }
 
 generate_report()
 {
    echo "\nGenerate report..."
-    "${LCOV_PATH}/genhtml" --output-directory . ${LCOV_INFO}
-    open index.html
-   echo "\n####     A browser window is opened. Now you can see the code coverage!    ####"
+   "${LCOV_PATH}/genhtml" --output-directory . ${LCOV_INFO}
+   open index.html
+   echo "\n####     A browser window is opened. Now you can see the code coverage!    ####\n"
+   echo "Full HTML code coverage report is located at $BUILT_PRODUCTS_DIR/lcov."
+
 }
 
 remove_old_report || exit
