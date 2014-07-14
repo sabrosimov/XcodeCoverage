@@ -44,7 +44,7 @@ remove_source()
 
 gather_coverage()
 {
-    echo "\nGather covarege ..."
+    echo "\nGather coverage ..."
     LCOV --capture --derive-func-data -b "${SRCROOT}" -d "${OBJ_DIR}" -o ${LCOV_INFO}
 }
 
